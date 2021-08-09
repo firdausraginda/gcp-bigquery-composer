@@ -32,49 +32,6 @@ def access_config_and_input_arg():
     return config, input_file
 
 
-def access_input_file():
-    """access the data source file"""
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '--input',
-        dest='input',
-        required=True,
-        help='input file to process'
-    )
-
-    # args, pipeline_args = parser.parse_known_args()
-    args = parser.parse_args()
-
-    if not args.input:
-        print("missing input argument")
-        sys.exit(1)
-
-    # return args.input, pipeline_args
-    return args.input
-
-
-def access_config_file():
-    """access items in config.json"""
-    
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '-c', '--config', 
-        help='config file'
-    )
-
-    args = parser.parse_args()
-    
-    if args.config:
-        with open(args.config) as config_input:
-            config = json.load(config_input)
-    else:
-        print("missing config argument")
-        sys.exit(1)
-
-    return config
-
-
 def print_row(row):
     """simply print the passing value"""
 

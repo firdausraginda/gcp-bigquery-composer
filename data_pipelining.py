@@ -9,6 +9,14 @@ from big_query_setup import create_dataset, create_view
 # get config items & input file name
 config_item, input_file_name = access_config_and_input_arg()
 
+# set delivered & undelivered table name
+delivered_table_name = f"{config_item['project']}:{config_item['dataset']}.delivered_orders"
+undelivered_table_name = f"{config_item['project']}:{config_item['dataset']}.undelivered_orders"
+
+# set staing location when writing data to bigquery
+custom_gcs_temp_location = f"gs://{get_bucket_name(config_item['staging_location'])}"
+
+
 # create pipeline object
 p = beam.Pipeline()
 
@@ -83,14 +91,6 @@ undelivered_orders = (
     | 'print undelivered order total' >> beam.Map(print_row)
 )
 
-
-# set delivered & undelivered table name
-delivered_table_name = f"{config_item['project']}:{config_item['dataset']}.delivered_orders"
-undelivered_table_name = f"{config_item['project']}:{config_item['dataset']}.undelivered_orders"
-
-# set staing location when writing data to bigquery
-custom_gcs_temp_location = f"gs://{get_bucket_name(config_item['staging_location'])}"
-
 # create dataset food_orders
 create_dataset(config_item['dataset'])
 
@@ -107,7 +107,6 @@ create_dataset(config_item['dataset'])
     )
 )
 
-
 # create new table while loading data to bigquery table, for other order data
 (undelivered_orders
     | 'undelivered to json' >> beam.Map(to_json)
@@ -120,7 +119,6 @@ create_dataset(config_item['dataset'])
         custom_gcs_temp_location=custom_gcs_temp_location
     )
 )
-
 
 # run the whole pipeline
 run_result = p.run()
