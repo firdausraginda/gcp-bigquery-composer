@@ -52,50 +52,50 @@ with beam.Pipeline(options=options) as p:
 
     # filter rows with status != delivered and assign to other_orders
     # so other_orders is a Pcollections contain rows with status != delivered
-    # other_orders = (
-    #     cleaned_data
-    #     | 'undelivered filter' >> beam.Filter(lambda row: row.split(',')[8].lower() != 'delivered')
-    # )
+    other_orders = (
+        cleaned_data
+        | 'undelivered filter' >> beam.Filter(lambda row: row.split(',')[8].lower() != 'delivered')
+    )
 
     # print out count of overall data for testing purpose
-    # (cleaned_data
-    #     # global count of all items in Pcollections
-    #     | 'count total' >> beam.combiners.Count.Globally()
+    (cleaned_data
+        # global count of all items in Pcollections
+        | 'count total' >> beam.combiners.Count.Globally()
 
-    #     # add label for global total count
-    #     | 'total map' >> beam.Map(lambda x: 'total count:' + str(x))
+        # add label for global total count
+        | 'total map' >> beam.Map(lambda x: 'total count:' + str(x))
         
-    #     # print out global total count
-    #     | 'print total' >> beam.Map(print_row)
-    # )
+        # print out global total count
+        | 'print total' >> beam.Map(print_row)
+    )
 
     # print out count of delivered orders data for testing purpose
-    # (delivered_orders
-    #     # global count of all items in Pcollections
-    #     | 'count delivered orders total' >> beam.combiners.Count.Globally()
+    (delivered_orders
+        # global count of all items in Pcollections
+        | 'count delivered orders total' >> beam.combiners.Count.Globally()
 
-    #     # add label for global total count
-    #     | 'delivered order map' >> beam.Map(lambda x: 'delivered count:' + str(x))
+        # add label for global total count
+        | 'delivered order map' >> beam.Map(lambda x: 'delivered count:' + str(x))
         
-    #     # print out global total count
-    #     | 'print order total' >> beam.Map(print_row)
-    # )
+        # print out global total count
+        | 'print order total' >> beam.Map(print_row)
+    )
 
     # print out count of undelivered orders data for testing purpose
-    # (other_orders
-    #     # global count of all items in Pcollections
-    #     | 'count other orders total' >> beam.combiners.Count.Globally()
+    (other_orders
+        # global count of all items in Pcollections
+        | 'count other orders total' >> beam.combiners.Count.Globally()
 
-    #     # add label for global total count
-    #     | 'other order map' >> beam.Map(lambda x: 'undelivered count:' + str(x))
+        # add label for global total count
+        | 'other order map' >> beam.Map(lambda x: 'undelivered count:' + str(x))
         
-    #     # print out global total count
-    #     | 'print other order total' >> beam.Map(print_row)
-    # )
+        # print out global total count
+        | 'print other order total' >> beam.Map(print_row)
+    )
 
 
     delivered_table_spec = "try-dummy-project:dataset_food_orders.delivered_orders"
-    # other_table_spec = 'try-dummy-project:dataset_food_orders.other_orders'
+    other_table_spec = 'try-dummy-project:dataset_food_orders.other_orders'
     table_schema = 'customer_id:STRING,date:STRING,timestamp:STRING,order_id:STRING,items:STRING,amount:STRING,mode:STRING,restaurant:STRING,status:STRING,ratings:STRING,feedback:STRING,new_col:STRING'
     custom_gcs_temp_location = f"gs://{create_client('free-bucket-agi')}"
 
@@ -103,27 +103,28 @@ with beam.Pipeline(options=options) as p:
     (delivered_orders
         | 'delivered to json' >> beam.Map(to_json)
         | 'write delivered' >> beam.io.WriteToBigQuery(
-        delivered_table_spec,
-        schema=table_schema,
-        create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,
-        write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
-        additional_bq_parameters={'timePartitioning': {'type': 'DAY'}},
-        custom_gcs_temp_location=custom_gcs_temp_location
+            delivered_table_spec,
+            schema=table_schema,
+            create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,
+            write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
+            additional_bq_parameters={'timePartitioning': {'type': 'DAY'}},
+            custom_gcs_temp_location=custom_gcs_temp_location
         )
     )
 
 
     # create new table while loading data to bigquery table, for other order data
-    # (other_orders
-    #     | 'other to json' >> beam.Map(to_json)
-    #     | 'write other_orders' >> beam.io.WriteToBigQuery(
-    #         other_table_spec,
-    #         schema=table_schema,
-    #         create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,
-    #         write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
-    #         additional_bq_parameters={'timePartitioning': {'type': 'DAY'}}
-    #     )
-    # )
+    (other_orders
+        | 'other to json' >> beam.Map(to_json)
+        | 'write other_orders' >> beam.io.WriteToBigQuery(
+            other_table_spec,
+            schema=table_schema,
+            create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,
+            write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
+            additional_bq_parameters={'timePartitioning': {'type': 'DAY'}},
+            custom_gcs_temp_location=custom_gcs_temp_location
+        )
+    )
 
 
     # run the whole pipeline

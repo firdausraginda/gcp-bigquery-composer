@@ -40,7 +40,7 @@ def to_json(csv_str):
     fields = csv_str.split(',')
 
     json_str = {
-        "customer": fields[0],
+        "customer_id": fields[0],
         "date": fields[1],
         "timestamp": fields[2],
         "order_id": fields[3],
