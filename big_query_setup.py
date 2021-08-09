@@ -49,7 +49,7 @@ def create_view(dataset_name, view_name):
     # select only rows with date = today to ingest to the view table
     view_to_create.view_query = '''
         select *
-        from `try-dummy-project:food_orders.delivered_orders`
+        from `try-dummy-project.food_orders.delivered_orders`
         where
             _PARTITIONDATE = DATE(current_date())
         '''
