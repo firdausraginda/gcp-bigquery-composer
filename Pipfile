@@ -4,12 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-apache-beam = {extras = ["gcp"], version = "*"}
 google-cloud-bigquery = "*"
 wheel = "*"
 google-cloud-storage = "*"
+apache-airflow = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.8"
+
+[packages.apache-beam]
+extras = [ "gcp",]
+version = "*"

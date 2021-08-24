@@ -2,7 +2,7 @@ import apache_beam as beam
 from apache_beam.options.pipeline_options import PipelineOptions, StandardOptions
 from apache_beam.runners.runner import PipelineState
 from additionals.additional import print_row, remove_last_colon, remove_special_characters, to_json, access_config_and_input_arg
-from additionals.table_schema import order_schema 
+from additionals.table_schema import order_schema
 from cloud_storage_setup import get_bucket_name
 from big_query_setup import create_dataset, create_view
 
@@ -24,10 +24,10 @@ p = beam.Pipeline()
 cleaned_data = (
     # initial input Pcollection
     p
-    
+
     # read file
     | beam.io.ReadFromText(input_file_name, skip_header_lines=1)
-    
+
     # remove last colon
     | beam.Map(remove_last_colon)
 
@@ -62,10 +62,10 @@ undelivered_orders = (
 
     # add label for global total count
     | 'total map' >> beam.Map(lambda x: 'total count:' + str(x))
-    
+
     # print out global total count
     | 'print total' >> beam.Map(print_row)
-)
+ )
 
 # print out count of delivered orders data for testing purpose
 (delivered_orders
@@ -74,10 +74,10 @@ undelivered_orders = (
 
     # add label for global total count
     | 'delivered order map' >> beam.Map(lambda x: 'delivered count:' + str(x))
-    
+
     # print out global total count
     | 'print order total' >> beam.Map(print_row)
-)
+ )
 
 # print out count of undelivered orders data for testing purpose
 (undelivered_orders
@@ -86,10 +86,10 @@ undelivered_orders = (
 
     # add label for global total count
     | 'undelivered order map' >> beam.Map(lambda x: 'undelivered count:' + str(x))
-    
+
     # print out global total count
     | 'print undelivered order total' >> beam.Map(print_row)
-)
+ )
 
 # create dataset food_orders
 create_dataset(config_item['dataset'])
@@ -105,7 +105,7 @@ create_dataset(config_item['dataset'])
         additional_bq_parameters={'timePartitioning': {'type': 'DAY'}},
         custom_gcs_temp_location=custom_gcs_temp_location
     )
-)
+ )
 
 # create new table while loading data to bigquery table, for other order data
 (undelivered_orders
@@ -118,7 +118,7 @@ create_dataset(config_item['dataset'])
         additional_bq_parameters={'timePartitioning': {'type': 'DAY'}},
         custom_gcs_temp_location=custom_gcs_temp_location
     )
-)
+ )
 
 # run the whole pipeline
 run_result = p.run()
