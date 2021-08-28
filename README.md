@@ -6,7 +6,6 @@ Need to create `config.json` contains bigquery configuration setup:
 
 ```
 {
-    "google_application_credentials_path": "<path_to_service_account>",
     "project": "<project_name>",
     "dataset": "<dataset_name>",
     "staging_location": "<staging_location>"

@@ -2,6 +2,16 @@ import re
 import argparse
 import json
 import sys
+import pathlib
+
+
+def access_service_account():
+    """set path to service_account.json in gcs environment"""
+    
+    current_path = pathlib.Path(__file__).absolute()
+    service_account_path = current_path.parent.parent.joinpath("service_account.json")
+
+    return str(service_account_path)
 
 
 def access_config_and_input_arg():

@@ -1,6 +1,7 @@
+import pathlib
 from airflow import models
 from datetime import datetime, timedelta
-from airflow.contrib.operators.dataflow_operator import DataFlowPythonOperator
+from airflow.operators.bash_operator import BashOperator
 
 default_args = {
     'owner': 'airflow',
@@ -14,16 +15,27 @@ default_args = {
     }
 }
 
+# setting path to gcs/data folder in gcs environment
+current_path = pathlib.Path(__file__).absolute()
+config_dir_path = current_path.parent.parent.joinpath("data/food_orders")
+
+# setting path to each file in gcs environment
+config_file_path = config_dir_path.joinpath('config.json')
+data_pipelining_file_path = config_dir_path.joinpath('data_pipelining.py')
+input_file_path = config_dir_path.joinpath('src/food_daily.csv')
+
 with models.DAG(
-    'food_orders_dag',
+    'food_orders_dag_2',
     default_args=default_args,
     schedule_interval='@daily',
     catchup=False
 ) as dag:
 
-    t1 = DataFlowPythonOperator(
+    t1 = BashOperator(
         task_id='beam_task',
-        py_file='gs://us-central1-demo-food-order-6772f774-bucket/gcp-dataflow-bigquery/data_pipelining.py',
-        options={
-            'input': 'gs://us-central1-demo-food-order-6772f774-bucket/gcp-dataflow-bigquery/src/food_daily.csv'}
+        bash_command='python {main_script} --config {config_file} --input {input_file}'.format(
+            main_script=data_pipelining_file_path, 
+            config_file=config_file_path,
+            input_file=input_file_path
+        )
     )

@@ -1,5 +1,7 @@
+import sys
+import pathlib
+sys.path.append(str(pathlib.Path(__file__).absolute().parent))
 import apache_beam as beam
-from apache_beam.options.pipeline_options import PipelineOptions, StandardOptions
 from apache_beam.runners.runner import PipelineState
 from additionals.additional import print_row, remove_last_colon, remove_special_characters, to_json, access_config_and_input_arg
 from additionals.table_schema import order_schema
