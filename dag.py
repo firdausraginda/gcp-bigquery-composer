@@ -25,7 +25,7 @@ data_pipelining_file_path = config_dir_path.joinpath('data_pipelining.py')
 input_file_path = config_dir_path.joinpath('src/food_daily.csv')
 
 with models.DAG(
-    'food_orders_dag_2',
+    'food_orders_dag',
     default_args=default_args,
     schedule_interval='@daily',
     catchup=False
