@@ -2,7 +2,7 @@
 
 ## Set Config File
 
-Need to create `config.json` contains bigquery configuration setup:
+1. Need to create `config.json` contains bigquery configuration setup under **data/food_orders/** :
 
 ```
 {
@@ -12,13 +12,21 @@ Need to create `config.json` contains bigquery configuration setup:
 }
 ```
 
+2. Need to put `service_account.json` under **data/food_orders/**
+
 ## Usage
 
-To run program in local:
+- To run program in local:
 
 ```
 > pipenv run python data/food_orders/data_pipelining.py --config data/food_orders/config.json --input data/food_orders/src/food_daily.csv
 ```
+- To run program in GCP:
+1. create composer environment
+2. open google cloud bucket that linked to composer
+3. copy all files under **dags** to **dags** folder in google cloud
+4. copy all files under **data** to **data** folder in google cloud
+5. run the airflow dag (airflow link can be seen in composer environment configuration)
 
 ## Reference
 - [general apache beam programming guide](https://beam.apache.org/documentation/programming-guide/)
