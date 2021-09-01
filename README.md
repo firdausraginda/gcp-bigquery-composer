@@ -14,10 +14,10 @@ Need to create `config.json` contains bigquery configuration setup:
 
 ## Usage
 
-To run program:
+To run program in local:
 
 ```
-> pipenv run python data_pipelining.py --config config.json --input src/food_daily.csv
+> pipenv run python data/food_orders/data_pipelining.py --config data/food_orders/config.json --input data/food_orders/src/food_daily.csv
 ```
 
 ## Reference
@@ -25,3 +25,4 @@ To run program:
 - [bigquery job](https://cloud.google.com/bigquery/docs/reference/rest/v2/Job)
 - [install apache beam](https://cloud.google.com/dataflow/docs/guides/installing-beam-sdk#python)
 - [install google cloud storage](https://cloud.google.com/storage/docs/reference/libraries#client-libraries-install-python)
+- [install google cloud bigquery](https://cloud.google.com/bigquery/docs/reference/libraries#client-libraries-install-python)
